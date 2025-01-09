@@ -1,41 +1,56 @@
 <!DOCTYPE html>
 <html lang="sv">
 <head>
-  <meta charset="UTF-8">
-  <title>Certifikatskapare</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certifikatgenerator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body class="p-3">
-  <div class="container">
-    <h1>Skapa certifikat</h1>
+<body class="bg-light">
+    <div class="container py-5">
+        <h1 class="text-center">Certifikatgenerator</h1>
 
-    {% with messages = get_flashed_messages(category_filter=["error"]) %}
-      {% if messages %}
-        <div class="alert alert-danger" role="alert">
-          {{ messages[0] }}
+        <!-- Information om mallen -->
+        <div class="alert alert-info mt-4">
+            <h4>Instruktioner</h4>
+            <p>Din Word-mall måste innehålla följande platshållare som brödtext:</p>
+            <ul>
+                <li><strong>DATUM</strong>: Ersätts med det datum som anges i formuläret.</li>
+                <li><strong>NAMN</strong>: Ersätts med studentens namn.</li>
+            </ul>
+            <p>
+                Om du är osäker, kan du ladda ner en <a href="/download_template" class="alert-link">exempelmall</a>.
+            </p>
         </div>
-      {% endif %}
-    {% endwith %}
 
-    <form action="{{ url_for('index') }}" method="POST" enctype="multipart/form-data">
-      <div class="mb-3">
-        <label for="docx_file" class="form-label">Välj .docx-mall:</label>
-        <input type="file" class="form-control" name="docx_file" required>
-      </div>
-      <div class="mb-3">
-        <label for="kurskod" class="form-label">Kurskod:</label>
-        <input type="text" class="form-control" name="kurskod" required>
-      </div>
-      <div class="mb-3">
-        <label for="datum" class="form-label">Datum:</label>
-        <input type="text" class="form-control" name="datum" value="{{ today }}" required>
-      </div>
-      <div class="mb-3">
-        <label for="student_list" class="form-label">Studentnamn (ett per rad):</label>
-        <textarea class="form-control" rows="6" name="student_list"></textarea>
-      </div>
-      <button type="submit" class="btn btn-primary">Skapa certifikat</button>
-    </form>
-  </div>
+        <!-- Formulär -->
+        <form method="POST" enctype="multipart/form-data" action="/">
+            <div class="mb-3">
+                <label for="kurskod" class="form-label">Kurskod</label>
+                <input type="text" id="kurskod" name="kurskod" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="datum" class="form-label">Datum</label>
+                <input type="date" id="datum" name="datum" class="form-control" value="{{ today }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="student_list" class="form-label">Studentnamn (ett per rad)</label>
+                <textarea id="student_list" name="student_list" class="form-control" rows="5" required></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="docx_file" class="form-label">Ladda upp Word-mall</label>
+                <input type="file" id="docx_file" name="docx_file" class="form-control" accept=".docx" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Generera certifikat</button>
+        </form>
+
+        <!-- Diskret informationsruta -->
+        <footer class="text-center mt-5">
+            <small class="text-muted">
+                Denna applikation är skapad av <strong>Marcus S. Hjärne</strong>, lärare, doktor och humanist med automatiseringsambitioner av mördande tråkiga uppgifter, 
+                allt för att förenkla skapandet av certifikat med stil och precision.
+            </small>
+        </footer>
+    </div>
 </body>
 </html>

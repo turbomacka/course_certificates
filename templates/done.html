@@ -1,31 +1,132 @@
 <!DOCTYPE html>
 <html lang="sv">
 <head>
-  <meta charset="UTF-8">
-  <title>Klart!</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Genererade Filer</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body class="p-3">
-  <div class="container">
-    <h1>Certifikat skapade!</h1>
-    <p>Följande filer har skapats:</p>
-    <ul>
-      {% for f in files %}
-        <li>
-          <a href="{{ url_for('get_file', filename=f) }}" class="link-primary" download>{{ f }}</a>
-        </li>
-      {% endfor %}
-    </ul>
+<body class="bg-light">
+    <div class="container py-5">
+        <h1 class="text-center">Genererade Filer</h1>
 
-    <!-- Om du vill ha en knapp för att ladda ner en zip med alla filer: -->
-    <!--
-    <form action="{{ url_for('download_zip') }}" method="POST">
-      <button class="btn btn-success">Ladda ner alla som ZIP</button>
-    </form>
-    -->
+        <!-- Progress-bar och meddelanden -->
+        <div id="progress-container" class="mt-4" style="display: none;">
+            <h5>Konvertering pågår...</h5>
+            <div class="progress">
+                <div id="progress-bar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+                    style="width: 0%;"></div>
+            </div>
+            <p id="status-message" class="mt-3 text-muted"></p>
+        </div>
 
-    <br>
-    <a href="{{ url_for('index') }}" class="btn btn-secondary">Tillbaka</a>
-  </div>
+        <!-- DOCX-filer -->
+        <h2>DOCX-filer</h2>
+        <ul class="list-group mb-3">
+            {% for file in docx_files %}
+            <li class="list-group-item">{{ file }}</li>
+            {% endfor %}
+        </ul>
+        <form method="POST" action="/download_zip/docx">
+            <button type="submit" class="btn btn-primary">Ladda ner alla DOCX som ZIP</button>
+        </form>
+
+        <!-- Knapp för att konvertera till PDF -->
+        {% if not pdf_files %}
+        <div class="mt-4">
+            <form method="POST" action="/convert_pdf">
+                <button type="submit" id="convert-button" class="btn btn-warning">Konvertera alla DOCX till PDF</button>
+            </form>
+        </div>
+        {% endif %}
+
+       <!-- PDF-filer -->
+{% if pdf_files %}
+<h2 class="mt-4">PDF-filer</h2>
+<ul class="list-group mb-3">
+    {% for file in pdf_files %}
+    <li class="list-group-item">{{ file }}</li>
+    {% endfor %}
+</ul>
+<form method="POST" action="/download_zip/pdf">
+    <button type="submit" class="btn btn-primary">Ladda ner alla PDF som ZIP</button>
+</form>
+{% else %}
+<p class="text-muted">Inga PDF-filer skapades ännu. Du kan försöka konvertera igen.</p>
+{% endif %}
+
+
+        <!-- Tillbaka till startsidan -->
+        <div class="mt-4">
+            <a href="/" class="btn btn-secondary">Tillbaka till startsidan</a>
+        </div>
+    </div>
+
+    <script>
+        const messages = [
+            "Analyserar dokumentens quantum-fluktuationer...",
+         "Analyserar dokumentens quantum-fluktuationer...",
+    "Initierar hyperdimensionell korrekturläsning...",
+    "Bearbetar singularitetsmatrisen...",
+    "Beräknar Schrödingers layout...",
+    "Genererar plasmafält för marginaler...",
+    "Avkrypterar wormhole-stöpta fotnoter...",
+    "Söker efter potentiella tidsparadoxer...",
+    "Kalibrerar neutrino-baserad PDF-kompression...",
+    "Optimerar textens warp-drive-egenskaper...",
+    "Finaliserar transdimensionella styckelänkar...",
+    "Synkroniserar flux-kondensatorn...",
+    "Analyserar oort-molnets påverkan på textformat...",
+    "Injicerar anti-materia för snabbare sidbrytning...",
+    "Skapar holografiska sidnumreringar...",
+    "Justerar typsnittens kvarkstruktur...",
+    "Transformerar fotnoter till tachyon-baserad metadata...",
+    "Verifierar hyperloop-kompatibilitet för PDF...",
+    "Extraherar textens mörka materia...",
+    "Upptäcker oändliga loopar i innehållsförteckningen...",
+    "Förebygger Big Bang i sidhuvuddesignen...",
+    "Avslutar simuleringen av multiversums layout...",
+    "Aktiverar laserprecision för sidbrytning...",
+    "Konverterar metaforer till digital poesi...",
+    "Säkerställer att AI:n inte skriver en egen roman...",
+    "Skickar sidbrytningar till parallella dimensioner...",
+    "Analyserar Heisenbergs osäkerhetsprincip i tabeller...",
+    "Avancerad tid-rese-kompatibilitet implementeras...",
+    "Skapar tesserakt-baserade marginaljusteringar...",
+    "Laddar ner framtidens typsnitt...",
+    "Navigerar den fjärde dimensionens stilguider..."    
+	"Initierar hyperdimensionell korrekturläsning...",
+            "Bearbetar singularitetsmatrisen...",
+            "Beräknar Schrödingers layout...",
+            "Genererar plasmafält för marginaler...",
+            "Avkrypterar wormhole-stöpta fotnoter...",
+            "Söker efter potentiella tidsparadoxer...",
+            "Kalibrerar neutrino-baserad PDF-kompression...",
+            "Optimerar textens warp-drive-egenskaper...",
+            "Finaliserar transdimensionella styckelänkar..."
+        ];
+
+        let progress = 0;
+        let interval;
+
+        document.getElementById('convert-button')?.addEventListener('click', function () {
+            const progressContainer = document.getElementById('progress-container');
+            const progressBar = document.getElementById('progress-bar');
+            const statusMessage = document.getElementById('status-message');
+
+            progressContainer.style.display = 'block';
+            progress = 0;
+
+            interval = setInterval(() => {
+                progress += 10;
+                progressBar.style.width = progress + '%';
+                statusMessage.textContent = messages[Math.floor(Math.random() * messages.length)];
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    statusMessage.textContent = "Konverteringen slutförd! Kontrollera dina PDF-filer.";
+                }
+            }, 1000);
+        });
+    </script>
 </body>
 </html>
