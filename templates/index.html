@@ -10,8 +10,8 @@
     <div class="container py-5">
         <h1 class="text-center">Certifikatgenerator</h1>
 
-        <!-- Information om mallen -->
-        <div class="alert alert-info mt-4">
+        <!-- Information Section -->
+        <section class="alert alert-info mt-4">
             <h4>Instruktioner</h4>
             <p>Din Word-mall måste innehålla följande platshållare som brödtext:</p>
             <ul>
@@ -19,36 +19,68 @@
                 <li><strong>NAMN</strong>: Ersätts med studentens namn.</li>
             </ul>
             <p>
-                Om du är osäker, kan du ladda ner en <a href="/download_template" class="alert-link">exempelmall</a>.
+                Är du osäker? Ladda ner en <a href="/download_template" class="alert-link">exempelmall</a> för att se hur det fungerar.
             </p>
-        </div>
+        </section>
 
-        <!-- Formulär -->
-        <form method="POST" enctype="multipart/form-data" action="/">
+        <!-- Main Form -->
+        <form method="POST" enctype="multipart/form-data" action="/" aria-label="Certifikatgeneratorformulär">
+            <!-- Kurskod -->
             <div class="mb-3">
                 <label for="kurskod" class="form-label">Kurskod</label>
-                <input type="text" id="kurskod" name="kurskod" class="form-control" required>
+                <input 
+                    type="text" 
+                    id="kurskod" 
+                    name="kurskod" 
+                    class="form-control" 
+                    placeholder="Ange kurskod (t.ex., HPC012)" 
+                    required>
             </div>
+
+            <!-- Datum -->
             <div class="mb-3">
                 <label for="datum" class="form-label">Datum</label>
-                <input type="date" id="datum" name="datum" class="form-control" value="{{ today }}" required>
+                <input 
+                    type="date" 
+                    id="datum" 
+                    name="datum" 
+                    class="form-control" 
+                    value="{{ today }}" 
+                    required>
             </div>
+
+            <!-- Studentname -->
             <div class="mb-3">
                 <label for="student_list" class="form-label">Studentnamn (ett per rad)</label>
-                <textarea id="student_list" name="student_list" class="form-control" rows="5" required></textarea>
+                <textarea 
+                    id="student_list" 
+                    name="student_list" 
+                    class="form-control" 
+                    rows="5" 
+                    placeholder="Skriv varje namn på en ny rad..." 
+                    required></textarea>
             </div>
+
+            <!-- Upload Word template -->
             <div class="mb-3">
                 <label for="docx_file" class="form-label">Ladda upp Word-mall</label>
-                <input type="file" id="docx_file" name="docx_file" class="form-control" accept=".docx" required>
+                <input 
+                    type="file" 
+                    id="docx_file" 
+                    name="docx_file" 
+                    class="form-control" 
+                    accept=".docx" 
+                    required>
             </div>
-            <button type="submit" class="btn btn-primary">Generera certifikat</button>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-primary w-100">Generera certifikat</button>
         </form>
 
-        <!-- Diskret informationsruta -->
+        <!-- Footer -->
         <footer class="text-center mt-5">
             <small class="text-muted">
-                Denna applikation är skapad av <strong>Marcus S. Hjärne</strong>, lärare, doktor och humanist med automatiseringsambitioner av mördande tråkiga uppgifter, 
-                allt för att förenkla skapandet av certifikat med stil och precision.
+                Denna applikation är utvecklad av <strong>Marcus S. Hjärne</strong>, som förenklar tidskrävande uppgifter för att hjälpa utbildare med stil och precision.
             </small>
         </footer>
     </div>

@@ -11,21 +11,37 @@
     <div class="container py-5 text-center">
         <h1>Konverterar till PDF</h1>
         <div class="progress my-4" style="height: 30px;">
-            <div class="progress-bar progress-bar-striped progress-bar-animated" id="progress-bar" role="progressbar" style="width: 0%;">0%</div>
+            <!-- Progress Bar -->
+            <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                 id="progress-bar" 
+                 role="progressbar" 
+                 style="width: 0%;">
+                0%
+            </div>
         </div>
         <p>Vänligen vänta medan dina filer konverteras...</p>
+
+        <!-- JavaScript for Progress Updates -->
         <script>
+            /**
+             * Fetches and updates the progress bar dynamically.
+             */
             function updateProgress() {
                 $.getJSON('/conversion_status', function(data) {
                     const progress = data.progress;
                     $('#progress-bar').css('width', progress + '%').text(progress + '%');
+                    
                     if (progress < 100) {
-                        setTimeout(updateProgress, 500);
+                        setTimeout(updateProgress, 500); // Continue updating every 500ms
                     } else {
-                        window.location.href = '/';  // Gå tillbaka till startsidan när det är klart
+                        window.location.href = '/'; // Redirect to home when complete
                     }
                 });
             }
+
+            /**
+             * Initialize progress updates on page load.
+             */
             $(document).ready(function() {
                 updateProgress();
             });

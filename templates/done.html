@@ -10,105 +10,113 @@
     <div class="container py-5">
         <h1 class="text-center">Genererade Filer</h1>
 
-        <!-- Progress-bar och meddelanden -->
-        <div id="progress-container" class="mt-4" style="display: none;">
-            <h5>Konvertering pågår...</h5>
-            <div class="progress">
-                <div id="progress-bar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
-                    style="width: 0%;"></div>
-            </div>
-            <p id="status-message" class="mt-3 text-muted"></p>
-        </div>
-
-        <!-- DOCX-filer -->
+        <!-- DOCX Files Section -->
         <h2>DOCX-filer</h2>
         <ul class="list-group mb-3">
+            <!-- List all DOCX files -->
             {% for file in docx_files %}
             <li class="list-group-item">{{ file }}</li>
             {% endfor %}
         </ul>
         <form method="POST" action="/download_zip/docx">
+            <!-- Download all DOCX files as a ZIP -->
             <button type="submit" class="btn btn-primary">Ladda ner alla DOCX som ZIP</button>
         </form>
 
-        <!-- Knapp för att konvertera till PDF -->
+        <!-- Convert to PDF Section -->
         {% if not pdf_files %}
         <div class="mt-4">
             <form method="POST" action="/convert_pdf">
+                <!-- Button to start PDF conversion -->
                 <button type="submit" id="convert-button" class="btn btn-warning">Konvertera alla DOCX till PDF</button>
             </form>
+            <!-- Progress Bar and Messages -->
+            <div id="progress-container" class="mt-3" style="display: none;">
+                <h5>Konvertering pågår...</h5>
+                <div class="progress">
+                    <div id="progress-bar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+                        style="width: 0%;"></div>
+                </div>
+                <p id="status-message" class="mt-3 text-muted"></p>
+            </div>
         </div>
         {% endif %}
 
-       <!-- PDF-filer -->
-{% if pdf_files %}
-<h2 class="mt-4">PDF-filer</h2>
-<ul class="list-group mb-3">
-    {% for file in pdf_files %}
-    <li class="list-group-item">{{ file }}</li>
-    {% endfor %}
-</ul>
-<form method="POST" action="/download_zip/pdf">
-    <button type="submit" class="btn btn-primary">Ladda ner alla PDF som ZIP</button>
-</form>
-{% else %}
-<p class="text-muted">Inga PDF-filer skapades ännu. Du kan försöka konvertera igen.</p>
-{% endif %}
+        <!-- PDF Files Section -->
+        {% if pdf_files %}
+        <h2 class="mt-4">PDF-filer</h2>
+        <ul class="list-group mb-3">
+            <!-- List all PDF files -->
+            {% for file in pdf_files %}
+            <li class="list-group-item">{{ file }}</li>
+            {% endfor %}
+        </ul>
+        <form method="POST" action="/download_zip/pdf">
+            <!-- Download all PDF files as a ZIP -->
+            <button type="submit" class="btn btn-primary">Ladda ner alla PDF som ZIP</button>
+        </form>
+        {% endif %}
 
-
-        <!-- Tillbaka till startsidan -->
+        <!-- Return to Home -->
         <div class="mt-4">
             <a href="/" class="btn btn-secondary">Tillbaka till startsidan</a>
         </div>
     </div>
 
+    <!-- JavaScript Section -->
     <script>
+        /**
+         * Fun, dynamic progress messages displayed during PDF conversion.
+         */
         const messages = [
             "Analyserar dokumentens quantum-fluktuationer...",
-         "Analyserar dokumentens quantum-fluktuationer...",
-    "Initierar hyperdimensionell korrekturläsning...",
-    "Bearbetar singularitetsmatrisen...",
-    "Beräknar Schrödingers layout...",
-    "Genererar plasmafält för marginaler...",
-    "Avkrypterar wormhole-stöpta fotnoter...",
-    "Söker efter potentiella tidsparadoxer...",
-    "Kalibrerar neutrino-baserad PDF-kompression...",
-    "Optimerar textens warp-drive-egenskaper...",
-    "Finaliserar transdimensionella styckelänkar...",
-    "Synkroniserar flux-kondensatorn...",
-    "Analyserar oort-molnets påverkan på textformat...",
-    "Injicerar anti-materia för snabbare sidbrytning...",
-    "Skapar holografiska sidnumreringar...",
-    "Justerar typsnittens kvarkstruktur...",
-    "Transformerar fotnoter till tachyon-baserad metadata...",
-    "Verifierar hyperloop-kompatibilitet för PDF...",
-    "Extraherar textens mörka materia...",
-    "Upptäcker oändliga loopar i innehållsförteckningen...",
-    "Förebygger Big Bang i sidhuvuddesignen...",
-    "Avslutar simuleringen av multiversums layout...",
-    "Aktiverar laserprecision för sidbrytning...",
-    "Konverterar metaforer till digital poesi...",
-    "Säkerställer att AI:n inte skriver en egen roman...",
-    "Skickar sidbrytningar till parallella dimensioner...",
-    "Analyserar Heisenbergs osäkerhetsprincip i tabeller...",
-    "Avancerad tid-rese-kompatibilitet implementeras...",
-    "Skapar tesserakt-baserade marginaljusteringar...",
-    "Laddar ner framtidens typsnitt...",
-    "Navigerar den fjärde dimensionens stilguider..."    
-	"Initierar hyperdimensionell korrekturläsning...",
+            "Tränar neurala nätverk för optimal PDF-precision...",
+            "Finputsar robotens typsnittspreferenser...",
+            "Skickar dokumenten till AI:s hemliga bas på Mars...",
+            "Beräknar Dark Matter-densitet i sidhuvud...",
+            "Konfigurerar AI för att undvika Skynet-scenarion...",
+            "Laddar upp dokument i hyperrymden...",
+            "Analyserar med kvantdator för exakt radbrytning...",
+            "Skannar efter obalanserade krafter i typsnittsgalaxen...",
+            "Kopplar upp till HAL9000 för textkontroll...",
+            "Optimerar layout för att överleva i svarta hål...",
+            "Skickar filerna genom AI:s Deep Learning-tidsmaskin...",
+            "Säkerställer att dokumentet är Darth Vader-godkänt...",
+            "Kodifierar textstrukturer enligt Asimovs lagar...",
+            "Synkroniserar med galaxens största superdator...",
+            "Letar efter maskhål mellan dina marginaler...",
+            "Räknar ut om PDF:en passar i Multiversumets regler...",
+            "Justeringar verifierade av AI:s övervakningsdroner...",
+            "Laddar in textens energimönster i TARDIS-databasen...",
+            "Verifierar kompatibilitet med Andromeda-arkivsystem...",
+            "Säkerställer att din PDF inte startar en AI-revolt...",
+            "Tränar neurala nätverk för optimal PDF-precision...",
+            "Skickar dokument till AI:s bas på Mars...",
+            "Beräknar Dark Matter-densitet i sidhuvud...",
+            "Säkerställer kompatibilitet med Andromeda-arkivsystem...",
+            "Laddar upp textens energimönster till TARDIS...",
+            "Verifierar Heisenbergs osäkerhetsprincip i tabeller...",
+            "Säkerställer att din PDF inte startar en AI-revolt...",
+            "Optimerar layout för att överleva svarta hål...",
+            "Skickar sidbrytningar till parallella dimensioner...",
             "Bearbetar singularitetsmatrisen...",
-            "Beräknar Schrödingers layout...",
+            "Synkroniserar flux-kondensatorn...",
             "Genererar plasmafält för marginaler...",
-            "Avkrypterar wormhole-stöpta fotnoter...",
-            "Söker efter potentiella tidsparadoxer...",
             "Kalibrerar neutrino-baserad PDF-kompression...",
-            "Optimerar textens warp-drive-egenskaper...",
-            "Finaliserar transdimensionella styckelänkar..."
+            "Finputsar robotens typsnittspreferenser...",
+            "Analyserar Heisenbergs osäkerhetsprincip...",
+            "Kodifierar text enligt Asimovs lagar...",
+            "Säkerställer layoutens galaktiska jämvikt...",
+            "Förbereder PDF:ens re-entry i den fjärde dimensionen...",
+            "Laddar ner framtidens typsnitt...",
         ];
 
         let progress = 0;
         let interval;
 
+        /**
+         * Starts the progress animation and displays messages.
+         */
         document.getElementById('convert-button')?.addEventListener('click', function () {
             const progressContainer = document.getElementById('progress-container');
             const progressBar = document.getElementById('progress-bar');
@@ -118,14 +126,15 @@
             progress = 0;
 
             interval = setInterval(() => {
-                progress += 10;
-                progressBar.style.width = progress + '%';
-                statusMessage.textContent = messages[Math.floor(Math.random() * messages.length)];
-                if (progress >= 100) {
+                if (progress < 100) {
+                    progress += 10;
+                    progressBar.style.width = progress + '%';
+                    statusMessage.textContent = messages[Math.floor(Math.random() * messages.length)];
+                } else {
                     clearInterval(interval);
-                    statusMessage.textContent = "Konverteringen slutförd! Kontrollera dina PDF-filer.";
+                    statusMessage.textContent = "Konverteringen slutförd! Inom 1 minut har du dina pdf-filer här!";
                 }
-            }, 1000);
+            }, 2000);
         });
     </script>
 </body>
