@@ -23,6 +23,11 @@ ALLOWED_EXTENSIONS = {'docx'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['TEMPLATE_FOLDER'] = TEMPLATE_FOLDER
 
+# Ensure UPLOAD_FOLDER exists
+upload_folder = app.config['UPLOAD_FOLDER']
+if not os.path.exists(upload_folder):
+    os.makedirs(upload_folder)
+
 def clear_upload_folder(folder):
     """
     Removes all files in the specified folder.
