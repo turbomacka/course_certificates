@@ -14,11 +14,11 @@ RUN apt-get update && apt-get install -y \
     && touch /test-libreoffice.txt \
     && apt-get clean
 
-
-#testar libre-installationen
+# Kontrollera att LibreOffice är korrekt installerat
+RUN which libreoffice
 RUN libreoffice --version
 
-#Säkerställ att LibreOffice finns i PATH när applikationen körs.
+# Säkerställ att LibreOffice finns i PATH när applikationen körs
 ENV PATH="/usr/bin:${PATH}"
 
 # Sätt arbetskatalogen
@@ -36,5 +36,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Exponera Flask-porten
 EXPOSE 5000
 
-# Kör applikationen (Gunicorn är vanlig på Render)
-CMD ["gunicorn", "-b", "0.0.0.0:5000", "app:app"]
+# Kör applikationen med Gunicorn och optimera inställningarna
+CMD ["gunicorn", "-b", "0.0.0.0:5000", "--timeout", "240", "--workers", "3", "app:app"]
