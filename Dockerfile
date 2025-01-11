@@ -7,6 +7,9 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     libxml2-dev \
     libxslt1-dev \
+    libreoffice-writer \
+    fonts-dejavu-core \
+    xfonts-utils \
     && apt-get clean
 
 #testar libre-installationen
@@ -14,8 +17,6 @@ RUN libreoffice --version
 
 #Säkerställ att LibreOffice finns i PATH när applikationen körs.
 ENV PATH="/usr/bin:${PATH}"
-
-
 
 # Sätt arbetskatalogen
 WORKDIR /app

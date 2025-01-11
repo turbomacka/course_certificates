@@ -32,7 +32,6 @@ def convert_docx_to_pdf(folder):
 
 if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] == "--check":
-        # Kontrollera LibreOffice-installation
         try:
             which_result = subprocess.run(["which", "libreoffice"], capture_output=True, text=True, check=True)
             print(f"LibreOffice binary path: {which_result.stdout.strip()}")
@@ -47,6 +46,7 @@ if __name__ == "__main__":
         except Exception as e:
             print(f"Error checking LibreOffice: {e}", file=sys.stderr)
             sys.exit(1)
+
     elif len(sys.argv) == 2:
         # Kör konvertering
         folder = sys.argv[1]
