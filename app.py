@@ -154,30 +154,67 @@ def process_form():
 def convert_pdf():
     """
     Converts all .docx files in the uploads/ folder to .pdf.
-    Displays progress and handles errors.
+    Displays progress, checks for dependencies, and handles errors.
     """
+    import subprocess
+    import os
+
     folder = app.config['UPLOAD_FOLDER']
     docx_files = [f for f in os.listdir(folder) if f.endswith('.docx')]
     if not docx_files:
         flash("No DOCX files to convert!", "error")
         return redirect(url_for('index'))
 
+    # Kontrollera om LibreOffice är installerat
     try:
-        success, message = convert_docx_to_pdf(folder)
-        if success:
-            flash("All files were successfully converted to PDF!", "success")
-        else:
-            flash(message, "error")
-    except Exception as e:
-        flash(f"Error during PDF conversion: {str(e)}", "error")
+        result = subprocess.run(["libreoffice", "--version"], capture_output=True, text=True, check=True)
+        print(f"LibreOffice version: {result.stdout}")
+    except FileNotFoundError:
+        flash("LibreOffice is not installed or not found in PATH.", "error")
+        return redirect(url_for('index'))
+    except subprocess.CalledProcessError as e:
+        flash(f"LibreOffice command failed: {e}", "error")
+        return redirect(url_for('index'))
 
+    # Konvertera varje .docx-fil till .pdf
+    success = True
+    error_messages = []
+    for docx_file in docx_files:
+        input_path = os.path.join(folder, docx_file)
+        output_path = os.path.join(folder, os.path.splitext(docx_file)[0] + ".pdf")
+
+        try:
+            subprocess.run(
+                ["libreoffice", "--headless", "--convert-to", "pdf", input_path, "--outdir", folder],
+                capture_output=True,
+                check=True
+            )
+            # Kontrollera att PDF-filen skapades
+            if not os.path.exists(output_path):
+                success = False
+                error_messages.append(f"Failed to create PDF for: {docx_file}")
+        except subprocess.CalledProcessError as e:
+            success = False
+            error_messages.append(f"Error converting {docx_file}: {e}")
+
+    # Hantera resultat av konverteringen
+    if success:
+        flash("All files were successfully converted to PDF!", "success")
+    else:
+        flash("Some files could not be converted: " + "; ".join(error_messages), "error")
+
+    # Lista alla filer i katalogen
     all_files = sorted([f for f in os.listdir(folder)])
     pdf_files = [f for f in all_files if f.endswith('.pdf')]
     docx_files = [f for f in all_files if f.endswith('.docx')]
 
-    return render_template('done.html',
-                           docx_files=docx_files,
-                           pdf_files=pdf_files)
+    # Returnera resultat till användaren
+    return render_template(
+        'done.html',
+        docx_files=docx_files,
+        pdf_files=pdf_files
+    )
+
 
 @app.route('/download_template')
 def download_template():
