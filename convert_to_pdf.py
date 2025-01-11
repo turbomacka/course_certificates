@@ -29,10 +29,13 @@ def convert_docx_to_pdf(folder):
                 text=True,
                 check=True
             )
-            print(f"Conversion output for {docx_file}: {result.stdout.strip()}")
+            print(f"Conversion succeeded for {docx_file}: {result.stdout.strip()}")
         except subprocess.CalledProcessError as e:
+            print(f"Error converting {docx_file} (stdout): {e.stdout.strip()}", file=sys.stderr)
+            print(f"Error converting {docx_file} (stderr): {e.stderr.strip()}", file=sys.stderr)
             return False, f"Failed to convert {docx_file}: {e.stderr.strip()}"
         except Exception as e:
+            print(f"Unexpected error converting {docx_file}: {e}", file=sys.stderr)
             return False, f"Unexpected error converting {docx_file}: {e}"
 
     return True, "Conversion completed successfully."
@@ -47,6 +50,19 @@ if __name__ == "__main__":
             # Kontrollera LibreOffice-versionen
             version_result = subprocess.run(["libreoffice", "--version"], capture_output=True, text=True, check=True)
             print(f"LibreOffice version: {version_result.stdout.strip()}")
+
+            # Testa konvertering utan faktisk fil
+            test_conversion = subprocess.run(
+                ["libreoffice", "--headless", "--convert-to", "pdf", "/dev/null", "--outdir", "/tmp"],
+                capture_output=True,
+                text=True
+            )
+            if test_conversion.returncode != 0:
+                print(f"LibreOffice conversion test failed (stdout): {test_conversion.stdout.strip()}", file=sys.stderr)
+                print(f"LibreOffice conversion test failed (stderr): {test_conversion.stderr.strip()}", file=sys.stderr)
+                sys.exit(1)
+            else:
+                print("LibreOffice conversion test passed.")
         except FileNotFoundError:
             print("LibreOffice is not installed or not in PATH.", file=sys.stderr)
             sys.exit(1)
