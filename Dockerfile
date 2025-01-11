@@ -9,6 +9,14 @@ RUN apt-get update && apt-get install -y \
     libxslt1-dev \
     && apt-get clean
 
+#testar libre-installationen
+RUN libreoffice --version
+
+#Säkerställ att LibreOffice finns i PATH när applikationen körs.
+ENV PATH="/usr/bin:${PATH}"
+
+
+
 # Sätt arbetskatalogen
 WORKDIR /app
 

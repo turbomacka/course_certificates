@@ -166,36 +166,38 @@ def convert_pdf():
         flash("No DOCX files to convert!", "error")
         return redirect(url_for('index'))
 
+    # Test LibreOffice-installation
     try:
-        # Kontrollera konverteringsskript
-        result = subprocess.run(["python", "convert_to_pdf.py", "--check"], capture_output=True, text=True, check=True)
-        app.logger.info(f"Conversion script check: {result.stdout.strip()}")
+        check_result = subprocess.run(["python", "convert_to_pdf.py", "--check"], capture_output=True, text=True, check=True)
+        app.logger.info(f"LibreOffice check passed: {check_result.stdout.strip()}")
     except subprocess.CalledProcessError as e:
-        app.logger.error(f"Conversion script check failed: {e.stderr.strip()}")
-        flash(f"Conversion script check failed: {e.stderr.strip()}", "error")
+        app.logger.error(f"LibreOffice check failed: {e.stderr.strip()}")
+        flash(f"LibreOffice check failed: {e.stderr.strip()}", "error")
         return redirect(url_for('index'))
     except Exception as e:
-        app.logger.error(f"Unexpected error during script check: {e}")
-        flash("Unexpected error during script check.", "error")
+        app.logger.error(f"Unexpected error during LibreOffice check: {e}")
+        flash("Unexpected error during LibreOffice check.", "error")
         return redirect(url_for('index'))
 
-    # Kör konvertering
+    # Kör PDF-konvertering
     try:
-        result = subprocess.run(["python", "convert_to_pdf.py", folder], capture_output=True, text=True, check=True)
-        app.logger.info(f"Conversion output: {result.stdout.strip()}")
+        conversion_result = subprocess.run(["python", "convert_to_pdf.py", folder], capture_output=True, text=True, check=True)
+        app.logger.info(f"PDF conversion output: {conversion_result.stdout.strip()}")
         flash("All files were successfully converted to PDF!", "success")
     except subprocess.CalledProcessError as e:
-        app.logger.error(f"Error during PDF conversion: {e.stderr.strip()}")
-        flash(f"Error during PDF conversion: {e.stderr.strip()}", "error")
+        app.logger.error(f"PDF conversion failed: {e.stderr.strip()}")
+        flash(f"PDF conversion failed: {e.stderr.strip()}", "error")
     except Exception as e:
         app.logger.error(f"Unexpected error during PDF conversion: {e}")
         flash("An unexpected error occurred during PDF conversion.", "error")
 
+    # Lista filer i mappen och rendera resultatet
     all_files = sorted([f for f in os.listdir(folder)])
     pdf_files = [f for f in all_files if f.endswith('.pdf')]
     docx_files = [f for f in all_files if f.endswith('.docx')]
 
     return render_template('done.html', docx_files=docx_files, pdf_files=pdf_files)
+
 
 
 
