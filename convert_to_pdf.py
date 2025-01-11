@@ -28,15 +28,18 @@ def convert_docx_to_pdf(folder):
 
 if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] == "--check":
-        # Skriptkontroll
+        # Kontrollera LibreOffice-installation
         try:
             result = subprocess.run(["libreoffice", "--version"], capture_output=True, text=True, check=True)
             print(f"LibreOffice version: {result.stdout.strip()}")
         except FileNotFoundError:
-            print("LibreOffice is not installed.")
+            print("LibreOffice is not installed.", file=sys.stderr)
+            sys.exit(1)
+        except subprocess.CalledProcessError as e:
+            print(f"LibreOffice command failed: {e.stderr.strip()}", file=sys.stderr)
             sys.exit(1)
         except Exception as e:
-            print(f"Error checking LibreOffice: {e}")
+            print(f"Error checking LibreOffice: {e}", file=sys.stderr)
             sys.exit(1)
     elif len(sys.argv) == 2:
         # Kör konvertering
@@ -49,3 +52,4 @@ if __name__ == "__main__":
             sys.exit(1)
     else:
         print("Usage: python convert_to_pdf.py <folder>")
+
