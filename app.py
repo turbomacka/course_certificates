@@ -166,7 +166,7 @@ def convert_pdf():
         flash("No DOCX files to convert!", "error")
         return redirect(url_for('index'))
 
-    # Test LibreOffice-installation
+    # Test LibreOffice
     try:
         check_result = subprocess.run(["python", "convert_to_pdf.py", "--check"], capture_output=True, text=True, check=True)
         app.logger.info(f"LibreOffice check passed: {check_result.stdout.strip()}")
@@ -191,7 +191,6 @@ def convert_pdf():
         app.logger.error(f"Unexpected error during PDF conversion: {e}")
         flash("An unexpected error occurred during PDF conversion.", "error")
 
-    # Lista filer i mappen och rendera resultatet
     all_files = sorted([f for f in os.listdir(folder)])
     pdf_files = [f for f in all_files if f.endswith('.pdf')]
     docx_files = [f for f in all_files if f.endswith('.docx')]
