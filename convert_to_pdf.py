@@ -2,20 +2,12 @@ import os
 import sys
 import subprocess
 
+LIBREOFFICE_PATH = "/usr/bin/libreoffice"  # Uppdatera med rätt sökväg från loggarna
+
 def convert_docx_to_pdf(folder):
     """
     Converts all .docx files in a folder to .pdf using LibreOffice.
-    Returns (success: bool, message: str).
     """
-    try:
-        # Kontrollera skrivbehörigheter
-        test_file = os.path.join(folder, "test_write.txt")
-        with open(test_file, "w") as f:
-            f.write("Test file for permissions")
-        os.remove(test_file)
-    except Exception as e:
-        return False, f"Folder permissions error: {e}"
-
     docx_files = [f for f in os.listdir(folder) if f.endswith('.docx')]
     if not docx_files:
         return False, "No DOCX files found for conversion."
@@ -24,7 +16,7 @@ def convert_docx_to_pdf(folder):
         docx_path = os.path.join(folder, docx_file)
         try:
             result = subprocess.run(
-                ["libreoffice", "--headless", "--convert-to", "pdf", docx_path, "--outdir", folder],
+                [LIBREOFFICE_PATH, "--headless", "--convert-to", "pdf", docx_path, "--outdir", folder],
                 capture_output=True,
                 text=True,
                 check=True

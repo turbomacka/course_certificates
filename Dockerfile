@@ -4,17 +4,16 @@ FROM python:3.11-slim
 # Installera nödvändiga systemberoenden
 RUN apt-get update && apt-get install -y \
     libreoffice \
-    build-essential \
-    libxml2-dev \
-    libxslt1-dev \
     libreoffice-writer \
     fonts-dejavu-core \
     xfonts-utils \
-    libreoffice-core \
     libfontconfig1 \
     libxinerama1 \
     libxrandr2 \
+    && libreoffice --version \
+    && touch /test-libreoffice.txt \
     && apt-get clean
+
 
 #testar libre-installationen
 RUN libreoffice --version
