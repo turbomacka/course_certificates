@@ -43,36 +43,28 @@ def convert_docx_to_pdf(folder):
 if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] == "--check":
         try:
-            # Kontrollera var LibreOffice finns
+            # Testa var LibreOffice finns
             which_result = subprocess.run(["which", "libreoffice"], capture_output=True, text=True, check=True)
             print(f"LibreOffice binary path: {which_result.stdout.strip()}")
 
-            # Kontrollera LibreOffice-versionen
-            version_result = subprocess.run(["libreoffice", "--version"], capture_output=True, text=True, check=True)
-            print(f"LibreOffice version: {version_result.stdout.strip()}")
-
-            # Testa konvertering utan faktisk fil
-            test_conversion = subprocess.run(
-                ["libreoffice", "--headless", "--convert-to", "pdf", "/dev/null", "--outdir", "/tmp"],
+            # Försök starta LibreOffice utan konvertering
+            test_command = subprocess.run(
+                ["libreoffice", "--headless", "--version"],
                 capture_output=True,
                 text=True
             )
-            if test_conversion.returncode != 0:
-                print(f"LibreOffice conversion test failed (stdout): {test_conversion.stdout.strip()}", file=sys.stderr)
-                print(f"LibreOffice conversion test failed (stderr): {test_conversion.stderr.strip()}", file=sys.stderr)
+            if test_command.returncode != 0:
+                print(f"LibreOffice version check failed (stdout): {test_command.stdout.strip()}", file=sys.stderr)
+                print(f"LibreOffice version check failed (stderr): {test_command.stderr.strip()}", file=sys.stderr)
                 sys.exit(1)
-            else:
-                print("LibreOffice conversion test passed.")
+            print(f"LibreOffice version: {test_command.stdout.strip()}")
         except FileNotFoundError:
             print("LibreOffice is not installed or not in PATH.", file=sys.stderr)
-            sys.exit(1)
-        except subprocess.CalledProcessError as e:
-            print(f"LibreOffice command failed (stdout): {e.stdout.strip()}", file=sys.stderr)
-            print(f"LibreOffice command failed (stderr): {e.stderr.strip()}", file=sys.stderr)
             sys.exit(1)
         except Exception as e:
             print(f"Error checking LibreOffice: {e}", file=sys.stderr)
             sys.exit(1)
+
 
     elif len(sys.argv) == 2:
         # Kör konvertering

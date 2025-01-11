@@ -10,6 +10,10 @@ RUN apt-get update && apt-get install -y \
     libreoffice-writer \
     fonts-dejavu-core \
     xfonts-utils \
+    libreoffice-core \
+    libfontconfig1 \
+    libxinerama1 \
+    libxrandr2 \
     && apt-get clean
 
 #testar libre-installationen
