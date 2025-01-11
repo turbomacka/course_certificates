@@ -1,0 +1,10 @@
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+*.log
+*.tmp
+.git
+.vscode
+uploads/
+cert_template/

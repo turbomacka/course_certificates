@@ -6,6 +6,8 @@ from flask import Flask, render_template, request, redirect, url_for, flash, sen
 from werkzeug.utils import secure_filename
 from convert_to_pdf import convert_docx_to_pdf
 from docx import Document
+from lxml import etree
+
 
 # Flask Application Instance
 app = Flask(__name__)
@@ -59,7 +61,16 @@ def replace_text_in_document(docx_path, replacements, output_path):
         replacements (dict): Dictionary of text replacements {old_text: new_text}.
         output_path (str): Path to save the modified .docx file.
     """
+    from docx import Document
+
+    # Load the document
     doc = Document(docx_path)
+
+    # Namespace mapping
+    namespaces = {
+        'w': "http://schemas.openxmlformats.org/wordprocessingml/2006/main",
+        'wps': "http://schemas.microsoft.com/office/word/2010/wordprocessingShape"
+    }
 
     # Replace text in paragraphs
     for paragraph in doc.paragraphs:
@@ -69,14 +80,17 @@ def replace_text_in_document(docx_path, replacements, output_path):
                     run.text = run.text.replace(old_text, new_text)
 
     # Replace text in shapes (text boxes)
-    for shape in doc.element.body.xpath('.//w:drawing'):
-        text_elements = shape.xpath('.//w:t')
-        for text_element in text_elements:
+    xpath_expression = etree.XPath('.//wps:txbx/w:txbxContent//w:t', namespaces=namespaces)
+    for shape in xpath_expression(doc.element.body):
+        if shape.text:
             for old_text, new_text in replacements.items():
-                if old_text in text_element.text:
-                    text_element.text = text_element.text.replace(old_text, new_text)
+                if old_text in shape.text:
+                    shape.text = shape.text.replace(old_text, new_text)
 
+    # Save the updated document
     doc.save(output_path)
+
+
 
 @app.route('/', methods=['GET'])
 def index():

@@ -33,7 +33,7 @@ end
 # Unset irrelevant variables.
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV /mnt/c/Certificate_generator/LX_certificate-flak-app/venv
+set -gx VIRTUAL_ENV /mnt/c/Certificate_generator/LX_certificate-flask-app-git/venv
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/"bin $PATH
