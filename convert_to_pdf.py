@@ -1,48 +1,51 @@
 import os
+import sys
 import subprocess
 
-def convert_docx_to_pdf(input_folder):
+def convert_docx_to_pdf(folder):
     """
-    Converts all .docx files in input_folder to .pdf using LibreOffice.
-
-    Args:
-        input_folder (str): The path to the folder containing .docx files.
-
-    Returns:
-        tuple: (bool, str) where bool indicates success and str contains a message.
+    Converts all .docx files in a folder to .pdf using LibreOffice.
+    Returns (success: bool, message: str).
     """
-    try:
-        # Find all DOCX files in the folder
-        docx_files = [f for f in os.listdir(input_folder) if f.endswith('.docx')]
-        if not docx_files:
-            return False, "No DOCX files to convert."
+    docx_files = [f for f in os.listdir(folder) if f.endswith('.docx')]
+    if not docx_files:
+        return False, "No DOCX files found for conversion."
 
-        for docx_file in docx_files:
-            docx_path = os.path.join(input_folder, docx_file)  # Full path to the file
+    for docx_file in docx_files:
+        docx_path = os.path.join(folder, docx_file)
+        pdf_path = os.path.splitext(docx_path)[0] + '.pdf'
 
-            # Run LibreOffice in headless mode to convert to PDF
-            subprocess.run([
-                "libreoffice",
-                "--headless",
-                "--convert-to",
-                "pdf",
-                "--outdir",
-                input_folder,
-                docx_path
-            ], check=True)
+        try:
+            subprocess.run(
+                ["libreoffice", "--headless", "--convert-to", "pdf", docx_path, "--outdir", folder],
+                check=True,
+                capture_output=True
+            )
+        except subprocess.CalledProcessError as e:
+            return False, f"Failed to convert {docx_file}: {e.stderr.decode().strip()}"
 
-        return True, "All files were successfully converted to PDF!"
-
-    except subprocess.CalledProcessError as e:
-        return False, f"Conversion error: {e}"
-
-    except Exception as e:
-        return False, f"Unexpected error: {e}"
+    return True, "Conversion completed successfully."
 
 if __name__ == "__main__":
-    folder = input("Enter the path to the folder containing .docx files: ")
-    if os.path.isdir(folder):
+    if len(sys.argv) > 1 and sys.argv[1] == "--check":
+        # Skriptkontroll
+        try:
+            result = subprocess.run(["libreoffice", "--version"], capture_output=True, text=True, check=True)
+            print(f"LibreOffice version: {result.stdout.strip()}")
+        except FileNotFoundError:
+            print("LibreOffice is not installed.")
+            sys.exit(1)
+        except Exception as e:
+            print(f"Error checking LibreOffice: {e}")
+            sys.exit(1)
+    elif len(sys.argv) == 2:
+        # Kör konvertering
+        folder = sys.argv[1]
         success, message = convert_docx_to_pdf(folder)
-        print(message)
+        if success:
+            print(message)
+        else:
+            print(message, file=sys.stderr)
+            sys.exit(1)
     else:
-        print(f"The folder {folder} does not exist!")
+        print("Usage: python convert_to_pdf.py <folder>")

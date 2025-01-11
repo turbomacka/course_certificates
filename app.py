@@ -7,6 +7,8 @@ from werkzeug.utils import secure_filename
 from convert_to_pdf import convert_docx_to_pdf
 from docx import Document
 from lxml import etree
+import subprocess
+
 
 
 # Flask Application Instance
@@ -158,67 +160,50 @@ def process_form():
 @app.route('/convert_pdf', methods=['POST'])
 def convert_pdf():
     """
-    Converts all .docx files in the uploads/ folder to .pdf.
-    Displays progress, checks for dependencies, and handles errors.
+    Converts all .docx files in the uploads/ folder to .pdf using convert_to_pdf.py.
+    Displays progress and handles errors.
     """
-    import subprocess
-    import os
-
     folder = app.config['UPLOAD_FOLDER']
     docx_files = [f for f in os.listdir(folder) if f.endswith('.docx')]
+
     if not docx_files:
         flash("No DOCX files to convert!", "error")
         return redirect(url_for('index'))
 
-    # Kontrollera om LibreOffice är installerat
+    # Kontrollera om `convert_to_pdf.py` kan köras
     try:
-        result = subprocess.run(["libreoffice", "--version"], capture_output=True, text=True, check=True)
-        print(f"LibreOffice version: {result.stdout}")
+        result = subprocess.run(["python", "convert_to_pdf.py", "--check"], capture_output=True, text=True, check=True)
+        app.logger.info(f"PDF conversion script check: {result.stdout.strip()}")
     except FileNotFoundError:
-        flash("LibreOffice is not installed or not found in PATH.", "error")
+        app.logger.error("convert_to_pdf.py not found or not executable.")
+        flash("The conversion script is not available.", "error")
         return redirect(url_for('index'))
-    except subprocess.CalledProcessError as e:
-        flash(f"LibreOffice command failed: {e}", "error")
+    except Exception as e:
+        app.logger.error(f"Error checking conversion script: {e}")
+        flash("Error during script check.", "error")
         return redirect(url_for('index'))
 
-    # Konvertera varje .docx-fil till .pdf
-    success = True
-    error_messages = []
-    for docx_file in docx_files:
-        input_path = os.path.join(folder, docx_file)
-        output_path = os.path.join(folder, os.path.splitext(docx_file)[0] + ".pdf")
-
-        try:
-            subprocess.run(
-                ["libreoffice", "--headless", "--convert-to", "pdf", input_path, "--outdir", folder],
-                capture_output=True,
-                check=True
-            )
-            # Kontrollera att PDF-filen skapades
-            if not os.path.exists(output_path):
-                success = False
-                error_messages.append(f"Failed to create PDF for: {docx_file}")
-        except subprocess.CalledProcessError as e:
-            success = False
-            error_messages.append(f"Error converting {docx_file}: {e}")
-
-    # Hantera resultat av konverteringen
-    if success:
+    # Utför konverteringen
+    try:
+        result = subprocess.run(["python", "convert_to_pdf.py", folder], capture_output=True, text=True, check=True)
+        app.logger.info(f"Conversion output: {result.stdout.strip()}")
         flash("All files were successfully converted to PDF!", "success")
-    else:
-        flash("Some files could not be converted: " + "; ".join(error_messages), "error")
+    except subprocess.CalledProcessError as e:
+        app.logger.error(f"Error during PDF conversion: {e.stderr.strip()}")
+        flash(f"Conversion error: {e.stderr.strip()}", "error")
+    except Exception as e:
+        app.logger.error(f"Unexpected error during PDF conversion: {e}")
+        flash("An unexpected error occurred during PDF conversion.", "error")
 
-    # Lista alla filer i katalogen
+    # Lista filer i mappen och rendera resultatet
     all_files = sorted([f for f in os.listdir(folder)])
     pdf_files = [f for f in all_files if f.endswith('.pdf')]
     docx_files = [f for f in all_files if f.endswith('.docx')]
 
-    # Returnera resultat till användaren
-    return render_template(
-        'done.html',
-        docx_files=docx_files,
-        pdf_files=pdf_files
-    )
+    return render_template('done.html',
+                           docx_files=docx_files,
+                           pdf_files=pdf_files)
+
 
 
 @app.route('/download_template')
