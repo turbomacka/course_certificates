@@ -36,4 +36,4 @@ ENV PATH="/usr/bin:${PATH}"
 EXPOSE 5000
 
 # Kör applikationen med Gunicorn och optimera inställningarna
-CMD ["gunicorn", "-b", "0.0.0.0:5000", "--timeout", "240", "--workers", "3", "app:app"]
+CMD ["gunicorn", "-b", "0.0.0.0:5000", "--timeout", "600", "--workers", "3", "app:app"]
