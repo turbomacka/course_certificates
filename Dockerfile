@@ -14,6 +14,9 @@ RUN apt-get update && apt-get install -y \
     && touch /test-libreoffice.txt \
     && apt-get clean
 
+RUN pip install --no-cache-dir -r requirements.txt --root-user-action=ignore
+
+
 # Kontrollera att LibreOffice är korrekt installerat
 RUN which libreoffice
 RUN libreoffice --version
@@ -35,6 +38,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Exponera Flask-porten
 EXPOSE 5000
+
+
 
 # Kör applikationen med Gunicorn och optimera inställningarna
 CMD ["gunicorn", "-b", "0.0.0.0:5000", "--timeout", "240", "--workers", "3", "app:app"]
