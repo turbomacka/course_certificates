@@ -69,46 +69,51 @@
          * Fun, dynamic progress messages displayed during PDF conversion.
          */
         const messages = [
-            "Analyserar dokumentens quantum-fluktuationer...",
+           "Analyserar dokumentens quantum-fluktuationer...",
+            "Gratis hosting = långsamt. Tack för att du har tålamod!",
+            "Ta en kopp kaffe och njut av väntan – servern gör sitt bästa!",
             "Tränar neurala nätverk för optimal PDF-precision...",
+            "Render’s gratis hosting gör sitt bästa – tack för att du väntar!",
+            "Du kanske vill testa med färre filer nästa gång? Gratis tjänst, du vet!",
             "Finputsar robotens typsnittspreferenser...",
+            "Snål hårdvara i arbete. Tack för tålamodet!",
+            "Passa på att sträcka på benen eller ta en liten promenad medan du väntar!",
             "Skickar dokumenten till AI:s hemliga bas på Mars...",
+            "Gratis Render-hårdvara ger oss en längre väntan.",
+            "Servern svettas av alla filer – kanske dags att ta det lugnt med mängden?",
             "Beräknar Dark Matter-densitet i sidhuvud...",
+            "Vi kör långsamt, men vi kör gratis. Tack för tålamodet!",
+            "Har du en bok i närheten? Perfekt tillfälle att läsa ett kapitel eller två!",
             "Konfigurerar AI för att undvika Skynet-scenarion...",
+            "Servern stretar på tack vare gratis hosting. Tack för ditt tålamod!",
+            "En fil per gång kanske är snällare mot vår stackars server?",
             "Laddar upp dokument i hyperrymden...",
+            "Tålamod är gratis, precis som vår hosting!",
+            "Ring en vän och säg hej medan servern jobbar på!",
             "Analyserar med kvantdator för exakt radbrytning...",
+            "Render’s gratis hosting jobbar långsamt men gratis!",
+            "Servern kämpar med vikten av dina filer – har du testat att konvertera färre samtidigt?",
             "Skannar efter obalanserade krafter i typsnittsgalaxen...",
+            "Gratis hosting hos Render kräver lite extra tålamod!",
+            "Perfekt tid för att ta ut hunden (eller katten, om den går med på det)!",
             "Kopplar upp till HAL9000 för textkontroll...",
+            "Väntetiden sponsras av Render’s gratis hosting!",
+            "Vi märker att många filer samtidigt gör vår stackars server trött...",
             "Optimerar layout för att överleva i svarta hål...",
+            "Gratis hosting = gratis väntan. Tack för att du väntar!",
+            "Stirra ut genom fönstret och filosofera lite medan du väntar!",
             "Skickar filerna genom AI:s Deep Learning-tidsmaskin...",
+            "Lite väntan – gratis hosting kräver det ibland!",
+            "Kanske dags att överväga att konvertera färre filer samtidigt nästa gång?",
             "Säkerställer att dokumentet är Darth Vader-godkänt...",
+            "Servern stretar vidare på minimal hårdvara. Tack!",
+            "Lägg på en tvätt, häng tvätten – servern kommer vara klar snart!",
             "Kodifierar textstrukturer enligt Asimovs lagar...",
+            "Gratis hosting hos Render ger oss en paus att andas!",
+            "Kom tillbaka om fem minuter – kanske servern hunnit ikapp då!",
             "Synkroniserar med galaxens största superdator...",
-            "Letar efter maskhål mellan dina marginaler...",
-            "Räknar ut om PDF:en passar i Multiversumets regler...",
-            "Justeringar verifierade av AI:s övervakningsdroner...",
-            "Laddar in textens energimönster i TARDIS-databasen...",
-            "Verifierar kompatibilitet med Andromeda-arkivsystem...",
-            "Säkerställer att din PDF inte startar en AI-revolt...",
-            "Tränar neurala nätverk för optimal PDF-precision...",
-            "Skickar dokument till AI:s bas på Mars...",
-            "Beräknar Dark Matter-densitet i sidhuvud...",
-            "Säkerställer kompatibilitet med Andromeda-arkivsystem...",
-            "Laddar upp textens energimönster till TARDIS...",
-            "Verifierar Heisenbergs osäkerhetsprincip i tabeller...",
-            "Säkerställer att din PDF inte startar en AI-revolt...",
-            "Optimerar layout för att överleva svarta hål...",
-            "Skickar sidbrytningar till parallella dimensioner...",
-            "Bearbetar singularitetsmatrisen...",
-            "Synkroniserar flux-kondensatorn...",
-            "Genererar plasmafält för marginaler...",
-            "Kalibrerar neutrino-baserad PDF-kompression...",
-            "Finputsar robotens typsnittspreferenser...",
-            "Analyserar Heisenbergs osäkerhetsprincip...",
-            "Kodifierar text enligt Asimovs lagar...",
-            "Säkerställer layoutens galaktiska jämvikt...",
-            "Förbereder PDF:ens re-entry i den fjärde dimensionen...",
-            "Laddar ner framtidens typsnitt...",
+            "Beklagar väntetiden! Gratis hosting är inte snabb hosting.",
+            "Om det känns långsamt nu – tänk hur servern känner!",
         ];
 
         let progress = 0;
@@ -127,12 +132,12 @@
 
             interval = setInterval(() => {
                 if (progress < 100) {
-                    progress += 10;
+                    progress += 2;
                     progressBar.style.width = progress + '%';
                     statusMessage.textContent = messages[Math.floor(Math.random() * messages.length)];
                 } else {
                     clearInterval(interval);
-                    statusMessage.textContent = "Konverteringen slutförd! Inom 1 minut har du dina pdf-filer här!";
+                    statusMessage.textContent = "Konverteringen slutförd! Inom 10 minut har du dina pdf-filer här!";
                 }
             }, 2000);
         });
