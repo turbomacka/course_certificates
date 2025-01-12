@@ -11,18 +11,7 @@ RUN apt-get update && apt-get install -y \
     libxinerama1 \
     libxrandr2 \
     && libreoffice --version \
-    && touch /test-libreoffice.txt \
     && apt-get clean
-
-RUN pip install --no-cache-dir -r requirements.txt --root-user-action=ignore
-
-
-# Kontrollera att LibreOffice är korrekt installerat
-RUN which libreoffice
-RUN libreoffice --version
-
-# Säkerställ att LibreOffice finns i PATH när applikationen körs
-ENV PATH="/usr/bin:${PATH}"
 
 # Sätt arbetskatalogen
 WORKDIR /app
@@ -34,12 +23,17 @@ COPY . /app
 RUN pip install --upgrade pip
 
 # Installera Python-bibliotek från requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt --root-user-action=ignore
+
+# Kontrollera att LibreOffice är korrekt installerat
+RUN which libreoffice
+RUN libreoffice --version
+
+# Säkerställ att LibreOffice finns i PATH när applikationen körs
+ENV PATH="/usr/bin:${PATH}"
 
 # Exponera Flask-porten
 EXPOSE 5000
-
-
 
 # Kör applikationen med Gunicorn och optimera inställningarna
 CMD ["gunicorn", "-b", "0.0.0.0:5000", "--timeout", "240", "--workers", "3", "app:app"]
